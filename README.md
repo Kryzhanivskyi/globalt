@@ -1,6 +1,6 @@
 To run the Bot use following instructions:
 
-1. Clone project from this repo by running in terminal (https://github.com/Kryzhanivskyi/globalt.git)
+1. Clone project from this repo by running in terminal (git clone https://github.com/Kryzhanivskyi/globalt.git)
 2. Set up virtual environment by running in terminal (python3 -m venv yourvenvname)
 3. Activate virtual environment by running in terminal (source yourvenvname/bin/activate)
 4. Install requirements by running in terminal (pip install -r requirements.txt)
