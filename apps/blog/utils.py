@@ -74,7 +74,7 @@ def get_additional_data(email: str) -> Union[dict, None]:
         # DO CARE ABOUT EXCEPTION HANDLING
         return None
 
-    return response['person'] if 'person' in response else None
+    return response['person'] if response and 'person' in response else None
 
 
 
