@@ -10,6 +10,7 @@ from .managers import CustomUserManager
 
 class CustomUser(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
+    email_status = models.CharField(max_length=64, null=True, blank=True)
 
     objects = CustomUserManager()
 

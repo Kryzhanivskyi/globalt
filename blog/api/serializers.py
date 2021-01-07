@@ -2,8 +2,8 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from ..models import Post
-from ..utils import is_liked, is_verified, get_additional_data
-from typing import Union
+from ..utils import is_liked
+from .tasks import add_additional_data, add_email_status
 
 
 UserModel = get_user_model()
@@ -42,23 +42,15 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
 
         if validated_data['email']:
-            additional_data: Union[dict, None] = get_additional_data(validated_data['email'])
-            if additional_data:
-                try:
-                    user.first_name = additional_data['name']['givenName']
-                    user.last_name = additional_data['name']['familyName']
-                except KeyError:
-                    pass
+            add_additional_data.apply_async(countdown=30, kwargs={'user_id': user.id})
+
         user.save()
 
         return user
 
-    @staticmethod
-    def validate_email(email):
-        if is_verified(email):
-            return email
-        else:
-            raise serializers.ValidationError(f'Invalid email address: {email}', code='invalid_email')
+    def validate_email(self, email):
+        add_email_status.apply_async(countdown=30, kwargs={'username': self.initial_data['username'], 'email': email})
+        return email
 
     class Meta:
         model = UserModel
